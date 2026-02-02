@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>Cyber University — SWE-201</title>
+</head>
+
+<body>
+<div class="bg-orbs" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+
+<div class="page">
+  <header>
+    <div class="logo">Cyber University</div>
+    <nav>
+      <a href="students.html">Ученики</a>
+      <a href="teachers.html">Преподаватели</a>
+      <a href="schedule.html">Расписание</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="hero-content reveal">
+      <div class="eyebrow">Cyber University</div>
+      <h1 class="hero-title">SWE-201 — создаем будущее</h1>
+      <p class="hero-subtitle">Среда, где формируются навыки, лидерство и характер будущих IT-специалистов.</p>
+      <div class="hero-stats">
+        <div class="stat"><strong>16</strong><span>Students</span></div>
+        <div class="stat"><strong>6</strong><span>Teachers</span></div>
+        <div class="stat"><strong>12</strong><span>Lessons</span></div>
+      </div>
+    </div>
+    <div class="hero-actions reveal">
+      <button class="btn" onclick="openModal()" data-open-modal>Узнать больше</button>
+      <a class="btn ghost" href="schedule.html">Посмотреть расписание</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="quote-box reveal" id="quote">Загрузка цитаты…</div>
+    <div class="quote-actions reveal">
+      <button class="btn ghost" id="newQuote">Новая цитата</button>
+    </div>
+  </section>
+
+  <footer class="reveal">Cyber University — SWE-201 © 2025</footer>
+
+  <div class="modal" id="modal">
+    <div class="modal-box">
+      <span class="close" id="closeModal">×</span>
+      <h2>SWE-201</h2>
+      <p>Команда, практика и рост. Все в одном месте.</p>
+      <div class="modal-links">
+        <a href="students.html">👨‍🎓 Студенты</a>
+        <a href="teachers.html">👩‍🏫 Преподаватели</a>
+        <a href="schedule.html">📅 Расписание</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>

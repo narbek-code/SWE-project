@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
+<title>SWE-201 — Расписание</title>
+</head>
+
+<body>
+<div class="bg-orbs" aria-hidden="true">
+  <span class="orb orb-1"></span>
+  <span class="orb orb-2"></span>
+  <span class="orb orb-3"></span>
+</div>
+
+<div class="page">
+  <header>
+    <div class="logo">Cyber University</div>
+    <nav>
+      <a href="index.html">Главная</a>
+      <a href="students.html">Студенты</a>
+      <a href="teachers.html">Преподаватели</a>
+    </nav>
+  </header>
+
+  <h1 class="page-title reveal">Расписание SWE-201</h1>
+  <p class="subtitle reveal">Минимализм · Удобство · Стиль</p>
+
+  <div class="legend reveal">
+    <div class="legend-list">
+      <div class="legend-item"><span class="icon">💻</span>Programming</div>
+      <div class="legend-item"><span class="icon">🌍</span>English</div>
+      <div class="legend-item"><span class="icon">📐</span>Math</div>
+      <div class="legend-item"><span class="icon">⚛️</span>Physics</div>
+    </div>
+    <button class="btn ghost" id="todayBtn" type="button">Сегодня</button>
+  </div>
+
+  <div class="schedule">
+    <div class="day reveal" data-day="1">
+      <div class="day-title">Понедельник</div>
+      <div class="lesson">
+        <div class="time">10:30</div>
+        <div class="subject"><span class="icon">💻</span>Ахборот технологиялари</div>
+        <div class="teacher">Babayazov S</div>
+        <div class="room">Ауд. 210</div>
+      </div>
+      <div class="lesson">
+        <div class="time">12:00</div>
+        <div class="subject"><span class="icon">📘</span>Academic English</div>
+        <div class="teacher">Mamadova T</div>
+        <div class="room">Ауд. 317</div>
+      </div>
+    </div>
+
+    <div class="day reveal" data-day="2">
+      <div class="day-title">Вторник</div>
+      <div class="lesson">
+        <div class="time">09:00</div>
+        <div class="subject"><span class="icon">⚛️</span>Физика</div>
+        <div class="teacher">Axmedjanov N</div>
+        <div class="room">Ауд. 410</div>
+      </div>
+      <div class="lesson">
+        <div class="time">10:30</div>
+        <div class="subject"><span class="icon">💻</span>Программирование</div>
+        <div class="teacher">Babayazov S</div>
+        <div class="room">Ауд. 419</div>
+      </div>
+      <div class="lesson">
+        <div class="time">12:00</div>
+        <div class="subject"><span class="icon">🌍</span>English</div>
+        <div class="teacher">Tuxliyeva F</div>
+        <div class="room">Ауд. 404</div>
+      </div>
+    </div>
+
+    <div class="day reveal" data-day="3">
+      <div class="day-title">Среда</div>
+      <div class="lesson">
+        <div class="time">09:00</div>
+        <div class="subject"><span class="icon">🖥️</span>IT практика</div>
+        <div class="teacher">Islombekov B</div>
+        <div class="room">Ауд. 213</div>
+      </div>
+      <div class="lesson">
+        <div class="time">10:30</div>
+        <div class="subject"><span class="icon">📐</span>Математика</div>
+        <div class="teacher">To‘ychiyev S</div>
+        <div class="room">Ауд. 410</div>
+      </div>
+      <div class="lesson">
+        <div class="time">12:00</div>
+        <div class="subject"><span class="icon">👥</span>Кураторский час</div>
+        <div class="teacher">Bazarov A</div>
+        <div class="room">Актовый зал</div>
+      </div>
+    </div>
+
+    <div class="day reveal" data-day="4">
+      <div class="day-title">Четверг</div>
+      <div class="lesson">
+        <div class="time">09:00</div>
+        <div class="subject"><span class="icon">💻</span>Программирование</div>
+        <div class="teacher">Babayazov S</div>
+        <div class="room">Ауд. 210</div>
+      </div>
+      <div class="lesson">
+        <div class="time">10:30</div>
+        <div class="subject"><span class="icon">📐</span>Математика</div>
+        <div class="teacher">To‘ychiyev S</div>
+        <div class="room">Ауд. 317</div>
+      </div>
+      <div class="lesson">
+        <div class="time">12:00</div>
+        <div class="subject"><span class="icon">⚛️</span>Физика</div>
+        <div class="teacher">Axmedjanov N</div>
+        <div class="room">Ауд. 323</div>
+      </div>
+    </div>
+
+    <div class="day reveal" data-day="5">
+      <div class="day-title">Пятница</div>
+      <div class="lesson">
+        <div class="time">09:00</div>
+        <div class="subject"><span class="icon">🌍</span>English</div>
+        <div class="teacher">Tuxliyeva F</div>
+        <div class="room">Ауд. 402</div>
+      </div>
+      <div class="lesson">
+        <div class="time">10:30</div>
+        <div class="subject"><span class="icon">📐</span>Математика</div>
+        <div class="teacher">To‘ychiyev S</div>
+        <div class="room">Ауд. 416</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast">Сегодняшний день не найден</div>
+
+<script src="script.js"></script>
+</body>
+</html>
