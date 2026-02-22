@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber University — Профиль</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    body { min-height:100vh; margin:0; display:flex; justify-content:center; background-size: cover; }
+    .profile-shell {
+      width:min(960px, 94vw);
+      margin:32px auto;
+      padding:28px;
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.05);
+      border:1px solid rgba(255,255,255,0.14);
+      border-radius:20px;
+      box-shadow:0 24px 70px rgba(0,0,0,0.38), 0 0 40px rgba(0,255,255,0.25);
+      color:#e9f7ff;
+    }
+    .header { display:flex; align-items:center; gap:16px; flex-wrap:wrap; }
+    .avatar {
+      width:120px; height:120px; border-radius:50%; overflow:hidden; border:2px solid rgba(0,255,255,0.45);
+      box-shadow:0 10px 30px rgba(0,0,0,0.35);
+      background: rgba(255,255,255,0.08);
+    }
+    .avatar img { width:100%; height:100%; object-fit:cover; }
+    .info h2 { margin:0; }
+    .info .muted { color:#9ad7ff; margin:4px 0; }
+    .pill { display:inline-block; padding:6px 12px; border-radius:999px; background:rgba(124,123,255,0.18); color:#cfd7ff; font-weight:600; }
+    .grid { margin-top:18px; display:grid; gap:14px; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+    .card {
+      padding:16px; border-radius:14px; background: rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.1);
+      box-shadow: inset 0 0 0 1px rgba(0,255,255,0.12);
+    }
+    .card h3 { margin:0 0 10px; letter-spacing:0.4px; }
+    button, label.upload-btn {
+      padding:10px 14px; border:none; border-radius:12px; cursor:pointer;
+      background: linear-gradient(135deg, #00eaff, #7c7bff); color:#0b0f1a; font-weight:700;
+      box-shadow:0 10px 26px rgba(0,234,255,0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+      display:inline-flex; align-items:center; gap:8px;
+    }
+    button:hover:not(:disabled), label.upload-btn:hover { transform:translateY(-1px); box-shadow:0 14px 32px rgba(0,234,255,0.45); }
+    button:disabled { opacity:0.65; cursor:not-allowed; }
+    .status { min-height:18px; color:#9ad7ff; margin-top:8px; }
+    input[type="file"] { display:none; }
+    .divider { height:1px; background:linear-gradient(90deg, transparent, rgba(0,255,255,0.35), transparent); margin:18px 0; }
+  </style>
+</head>
+<body>
+  <div class="profile-shell">
+    <div class="header">
+      <div class="avatar" id="avatar-wrap">
+        <img id="avatar" src="" alt="Avatar">
+      </div>
+      <div class="info">
+        <h2 id="username">Загрузка...</h2>
+        <div class="muted" id="email">—</div>
+        <span class="pill" id="role">pending</span>
+        <div class="status" id="status"></div>
+      </div>
+      <div style="margin-left:auto;">
+        <button id="logout-btn" title="Выйти">Выйти</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Фото профиля</h3>
+        <p class="muted">PNG/JPG до 5 МБ. После загрузки аватар обновится.</p>
+        <label class="upload-btn" for="file-input">Загрузить фото</label>
+        <input id="file-input" type="file" accept="image/*" />
+        <div class="status" id="upload-status"></div>
+      </div>
+
+      <div class="card">
+        <h3>Данные аккаунта</h3>
+        <p><strong>Имя:</strong> <span id="name-field">—</span></p>
+        <p><strong>Email:</strong> <span id="email-field">—</span></p>
+        <p><strong>Роль:</strong> <span id="role-field">—</span></p>
+        <div class="status" id="data-status"></div>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signOut, updateProfile } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getFirestore, doc, getDoc, setDoc, updateDoc } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+
+    // Подключение вашего проекта Firebase (Auth/Firestore/Analytics)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUD1TVtWZxas9SVn75PuMmwi2HIu-hYoE",
+      authDomain: "cyber-university-f7b8c.firebaseapp.com",
+      projectId: "cyber-university-f7b8c",
+      storageBucket: "cyber-university-f7b8c.firebasestorage.app",
+      messagingSenderId: "603220099956",
+      appId: "1:603220099956:web:dd2ec21480ad95f1432221",
+      measurementId: "G-VJJNFLDP85"
+    };
+
+    // Инициализация Firebase core + сервисов, используемых на странице профиля
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);       // Firebase Authentication
+    const db = getFirestore(app);    // Firestore для данных профиля
+    getAnalytics(app);               // Google Analytics (по желанию)
+    const IMGBB_KEY = "268730494ca8bb37c4e02e7c37e2df0a"; // загрузка аватаров без Firebase Storage
+
+    const avatarEl = document.getElementById("avatar");
+    const usernameEl = document.getElementById("username");
+    const emailEl = document.getElementById("email");
+    const roleBadge = document.getElementById("role");
+    const nameField = document.getElementById("name-field");
+    const emailField = document.getElementById("email-field");
+    const roleField = document.getElementById("role-field");
+    const statusEl = document.getElementById("status");
+    const dataStatus = document.getElementById("data-status");
+    const uploadStatus = document.getElementById("upload-status");
+    const fileInput = document.getElementById("file-input");
+    const logoutBtn = document.getElementById("logout-btn");
+
+    // Универсальный статус
+    const setStatus = (el, text, ok = false) => {
+      el.textContent = text;
+      el.style.color = ok ? "#8ff7c4" : "#9ad7ff";
+    };
+
+    // Загружает данные пользователя из Firestore (и создаёт, если нет)
+    async function loadUserData(user) {
+      const userRef = doc(db, "users", user.uid);
+      const snap = await getDoc(userRef);
+      if (!snap.exists()) {
+        // Создаём документ с дефолтной ролью
+        await setDoc(userRef, {
+          displayName: user.displayName || "Без имени",
+          role: "pending",
+          email: user.email,
+          photoURL: user.photoURL || ""
+        });
+        return { displayName: user.displayName || "Без имени", role: "pending", email: user.email, photoURL: user.photoURL || "" };
+      }
+      return snap.data();
+    }
+
+    // Обновляет UI данными пользователя
+    function applyUserToUI(user, data) {
+      const displayName = data.displayName || user.displayName || "Без имени";
+      const email = data.email || user.email || "—";
+      const role = data.role || "pending";
+      const photoURL = data.photoURL || user.photoURL || "https://ui-avatars.com/api/?name=" + encodeURIComponent(displayName) + "&background=0be7ff&color=0b0f1a";
+
+      usernameEl.textContent = displayName;
+      nameField.textContent = displayName;
+      emailEl.textContent = email;
+      emailField.textContent = email;
+      roleBadge.textContent = role;
+      roleField.textContent = role;
+      avatarEl.src = photoURL;
+    }
+
+    // Загрузка файла на ImgBB
+    async function uploadToImgBB(file) {
+      const fd = new FormData();
+      fd.append("image", file);
+      const res = await fetch(`https://api.imgbb.com/1/upload?key=${IMGBB_KEY}`, {
+        method: "POST",
+        body: fd,
+      });
+      if (!res.ok) throw new Error("Не удалось загрузить изображение");
+      const data = await res.json();
+      return data?.data?.url;
+    }
+
+    // Загрузка и сохранение нового фото
+    async function handleUpload(user, file) {
+      if (!file) return;
+      if (file.size > 5 * 1024 * 1024) {
+        setStatus(uploadStatus, "Файл больше 5 МБ");
+        return;
+      }
+      try {
+        setStatus(uploadStatus, "Загрузка...");
+        const url = await uploadToImgBB(file);
+        if (!url) throw new Error("ImgBB вернул пустой URL");
+
+        // Обновляем Firestore и Auth профиль
+        const userRef = doc(db, "users", user.uid);
+        await updateDoc(userRef, { photoURL: url });
+        await updateProfile(user, { photoURL: url });
+
+        avatarEl.src = url;
+        setStatus(uploadStatus, "Фото обновлено", true);
+      } catch (err) {
+        setStatus(uploadStatus, "Ошибка загрузки: " + err.message);
+      }
+    }
+
+    // Отслеживаем авторизацию
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      setStatus(statusEl, "Загружаем профиль...");
+      try {
+        // Берём актуальные данные из Firestore (не из auth)
+        const userRef = doc(db, "users", user.uid);
+        const snap = await getDoc(userRef);
+        let data;
+        if (!snap.exists()) {
+          data = {
+            displayName: user.displayName || "Без имени",
+            role: "pending",
+            email: user.email,
+            photoURL: user.photoURL || ""
+          };
+          await setDoc(userRef, data);
+        } else {
+          data = snap.data();
+        }
+
+        // Обновляем UI реальной ролью
+        const role = data.role || "pending";
+        roleBadge.textContent = role;
+        roleField.textContent = role;
+
+        applyUserToUI(user, data);
+        setStatus(statusEl, "Онлайн", true);
+        setStatus(dataStatus, "Данные синхронизированы", true);
+      } catch (err) {
+        setStatus(statusEl, "Не удалось загрузить профиль: " + err.message);
+      }
+    });
+
+    // Обработчики
+    logoutBtn.addEventListener("click", async () => {
+      logoutBtn.disabled = true;
+      await signOut(auth);
+      window.location.href = "login.html";
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      const user = auth.currentUser;
+      if (!user) return;
+      handleUpload(user, file);
+    });
+  </script>
+</body>
+</html>

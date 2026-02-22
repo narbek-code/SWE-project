@@ -1,67 +1,176 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="style.css">
-<title>SWE-201 — Студенты</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>Студенты — Cyber University</title>
 </head>
-
 <body>
-<div class="bg-orbs" aria-hidden="true">
-  <span class="orb orb-1"></span>
-  <span class="orb orb-2"></span>
-  <span class="orb orb-3"></span>
-</div>
-
-<div class="page">
-  <header>
-    <div class="logo">Cyber University</div>
-    <nav>
-      <a href="index.html">Главная</a>
-      <a href="teachers.html">Преподаватели</a>
-      <a href="schedule.html">Расписание</a>
-    </nav>
-  </header>
-
-  <h1 class="page-title reveal">Студенты SWE-201</h1>
-  <p class="subtitle reveal">Наша команда — 16 человек, каждый важен.</p>
-
-
-  <div class="students-grid">
-    <div class="card student-card starosta reveal accent-pink" data-role="Leader">
-      <div class="photo"></div>
-      <div class="name">Jahongirmirzo S.</div>
-      <div class="role">Leader</div>
-      <div class="badge"><span class="icon">⭐</span>Leader</div>
-      <div class="trait">Leader</div>
-    </div>
-
-    <div class="card student-card reveal accent-violet" data-role="Developer"><div class="photo"></div><div class="name">NARBEK Y.</div><div class="role">Developer</div><div class="badge"><span class="icon">💻</span>Developer</div><div class="trait">Developer</div></div>
-    <div class="card student-card reveal accent-cyan" data-role="Student"><div class="photo"></div><div class="name">AMALЬ A.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-pink" data-role="Student"><div class="photo"></div><div class="name">FARZONABONU A.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-violet" data-role="Student"><div class="photo"></div><div class="name">OYDINA T.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-
-    <div class="card student-card reveal accent-cyan" data-role="Leader"><div class="photo"></div><div class="name">UMAR X.</div><div class="role">IT Leader</div><div class="badge"><span class="icon">⭐</span>IT Leader</div><div class="trait">Leader</div></div>
-    <div class="card student-card reveal accent-pink" data-role="Student"><div class="photo"></div><div class="name">OTABEK S.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-violet" data-role="Developer"><div class="photo"></div><div class="name">ELBEK M.</div><div class="role">Developer</div><div class="badge"><span class="icon">💻</span>Developer</div><div class="trait">Developer</div></div>
-    <div class="card student-card reveal accent-cyan" data-role="Developer"><div class="photo"></div><div class="name">OTABEK N.</div><div class="role">Developer</div><div class="badge"><span class="icon">💻</span>Developer</div><div class="trait">Developer</div></div>
-
-    <div class="card student-card reveal accent-violet" data-role="Student"><div class="photo"></div><div class="name">FAYZULOX K.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-cyan" data-role="Student"><div class="photo"></div><div class="name">HUSNIDDIN A.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-pink" data-role="Developer"><div class="photo"></div><div class="name">QODIRJON K.</div><div class="role">Developer</div><div class="badge"><span class="icon">💻</span>Developer</div><div class="trait">Developer</div></div>
-    <div class="card student-card reveal accent-violet" data-role="Developer"><div class="photo"></div><div class="name">SHERZOD M.</div><div class="role">Developer</div><div class="badge"><span class="icon">💻</span>Developer</div><div class="trait">Developer</div></div>
-
-    <div class="card student-card reveal accent-cyan" data-role="Student"><div class="photo"></div><div class="name">ISROILJON G.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-pink" data-role="Student"><div class="photo"></div><div class="name">UMAR M.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
-    <div class="card student-card reveal accent-violet" data-role="Student"><div class="photo"></div><div class="name">NURSULTON K.</div><div class="role">Student</div><div class="badge"><span class="icon">👤</span>Student</div><div class="trait">Student</div></div>
+  <div class="bg-orbs" aria-hidden="true">
+    <span class="orb orb-1"></span>
+    <span class="orb orb-2"></span>
+    <span class="orb orb-3"></span>
   </div>
 
-  <div class="group-quote reveal">
-    «Сильная группа — это не количество людей, а их единство»
-  </div>
-</div>
+  <div class="page">
+    <header>
+      <div class="logo">Cyber University</div>
+      <nav>
+        <a href="index.html">Главная</a>
+        <a href="students.html">Студенты</a>
+        <a href="teachers.html">Преподаватели</a>
+        <a href="schedule.html">Расписание</a>
+        <a id="auth-link" class="nav-auth-btn" href="login.html">Войти</a>
+      </nav>
+    </header>
 
-<script src="script.js"></script>
+    <h1 class="page-title reveal">Студенты SWE-201</h1>
+    <p class="subtitle reveal">Список группы в реальном времени. Доступно всем — авторизация не требуется.</p>
+
+    <section class="teacher-section">
+      <div class="legend">
+        <div class="legend-list">
+          <div class="legend-item"><span class="status-dot"></span>Online</div>
+          <div class="legend-item"><span class="status-dot" style="background:#ff7b7b;box-shadow:0 0 10px rgba(255,123,123,.6)"></span>Offline</div>
+          <div class="legend-item">Прогресс по курсу</div>
+        </div>
+        <div class="legend-item">Данные обновляются из Firestore</div>
+      </div>
+
+      <div id="studentsList" class="students-grid reveal"></div>
+    </section>
+
+    <footer class="reveal">Cyber University — SWE-201 © 2025</footer>
+  </div>
+
+  <script type="module" src="script.js"></script>
+  <script type="module">
+    import { auth, db } from "./script.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { collection, query, where, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const link = document.getElementById("auth-link");
+    const list = document.getElementById("studentsList");
+    const loaderHTML = `
+      <div class="center-row muted">
+        <div class="spinner tiny"></div>
+        Загружаем студентов…
+      </div>`;
+
+    const fallbackAvatar = (name = "Student") => {
+      return `https://api.dicebear.com/7.x/bottts-neutral/svg?seed=${encodeURIComponent(name)}&backgroundType=gradientLinear`;
+    };
+
+    onAuthStateChanged(auth, (user) => {
+      if (!link) return;
+      if (user) {
+        link.textContent = "Профиль";
+        link.href = "profile.html";
+      } else {
+        link.textContent = "Войти";
+        link.href = "login.html";
+      }
+    });
+
+    const createStudentCard = (raw) => {
+      const {
+        displayName = "Без имени",
+        status = "offline",
+        progress: rawProgress = 0,
+        course = "SWE-201",
+        photoURL = "",
+        role = "user",
+        tagline = "В деле: теория + практика"
+      } = raw || {};
+
+      const statusValue = (status || "").toLowerCase() === "online" ? "online" : "offline";
+      const progress = Number.isFinite(rawProgress) ? Math.min(Math.max(rawProgress, 0), 100) : 0;
+
+      const card = document.createElement("article");
+      card.className = "student-card";
+
+      const photo = document.createElement("div");
+      photo.className = "student-photo";
+      photo.style.backgroundImage = `url('${photoURL || fallbackAvatar(displayName)}')`;
+
+      const name = document.createElement("h3");
+      name.className = "student-name";
+      name.textContent = displayName;
+
+      const courseEl = document.createElement("p");
+      courseEl.className = "student-course";
+      courseEl.textContent = course;
+
+      const meta = document.createElement("div");
+      meta.className = "student-meta";
+
+      const statusEl = document.createElement("span");
+      statusEl.className = `status-pill ${statusValue === "online" ? "" : "offline"}`;
+      statusEl.innerHTML = `<span class="status-dot"></span>${statusValue === "online" ? "Online" : "Offline"}`;
+
+      const roleEl = document.createElement("span");
+      roleEl.className = "badge";
+      roleEl.textContent = role === "student" ? "Student" : role;
+
+      meta.append(statusEl, roleEl);
+
+      const progressWrap = document.createElement("div");
+      progressWrap.className = "progress";
+      const progressTrack = document.createElement("div");
+      progressTrack.className = "progress-track";
+      const progressFill = document.createElement("div");
+      progressFill.className = "progress-fill";
+      progressFill.style.width = progress + "%";
+      progressTrack.append(progressFill);
+      progressWrap.append(progressTrack);
+
+      const taglineEl = document.createElement("p");
+      taglineEl.className = "tagline";
+      taglineEl.textContent = tagline;
+
+      card.append(photo, name, courseEl, meta, progressWrap, taglineEl);
+      return card;
+    };
+
+    function renderEmpty() {
+      list.innerHTML = '<div class="center-row muted">Студенты не найдены.</div>';
+    }
+
+    function startStudentsFeed() {
+      if (!list) return;
+      list.innerHTML = loaderHTML;
+
+      const q = query(
+        collection(db, "users"),
+        where("role", "==", "student"),
+        limit(400)
+      );
+
+      return onSnapshot(
+        q,
+        (snap) => {
+          list.innerHTML = "";
+          let count = 0;
+          snap.forEach((docSnap) => {
+            const data = docSnap.data();
+            console.log("User role:", data?.role);
+            const role = (data?.role || "").toString().toLowerCase().trim();
+            if (role === "student") {
+              count++;
+              list.appendChild(createStudentCard(data));
+            }
+          });
+          if (count === 0) renderEmpty();
+        },
+        (err) => {
+          console.error("Ошибка загрузки студентов:", err);
+          list.innerHTML = '<div class="center-row muted">Не удалось загрузить студентов.</div>';
+        }
+      );
+    }
+
+    startStudentsFeed();
+  </script>
 </body>
 </html>

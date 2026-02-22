@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber University — Вход</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    /* Доп. стили под неон + glassmorphism */
+    body { display:flex; align-items:center; justify-content:center; min-height:100vh; }
+    .auth-card {
+      width: min(420px, 92vw);
+      padding: 32px;
+      backdrop-filter: blur(18px);
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.14);
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35), 0 0 30px rgba(0,255,255,0.25);
+      border-radius: 18px;
+      color: #e9f7ff;
+    }
+    .auth-card h1 { margin: 0 0 12px; letter-spacing: 0.5px; }
+    .auth-card p { margin-top: 0; color: #9ad7ff; }
+    .form-group { margin: 14px 0; }
+    label { display:block; margin-bottom:6px; font-weight:600; }
+    input {
+      width:100%; padding:12px 14px; border-radius:12px; border:1px solid rgba(255,255,255,0.18);
+      background: rgba(255,255,255,0.05); color:#e9f7ff; outline:none;
+      box-shadow: inset 0 0 0 1px rgba(0,255,255,0.15);
+    }
+    input:focus { box-shadow: 0 0 12px rgba(0,255,255,0.4), inset 0 0 0 1px rgba(0,255,255,0.4); }
+    button {
+      width:100%; padding:12px; border:none; border-radius:12px; cursor:pointer;
+      background: linear-gradient(135deg, #00eaff, #7c7bff); color:#0b0f1a; font-weight:700;
+      box-shadow: 0 10px 30px rgba(0,234,255,0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    button:disabled { opacity:0.6; cursor:not-allowed; }
+    button:hover:not(:disabled) { transform: translateY(-1px); box-shadow:0 14px 32px rgba(0,234,255,0.45); }
+    .message { min-height:20px; margin-top:10px; color:#ff9ea6; font-weight:600; }
+    .success { color:#8ff7c4; }
+    .footer { margin-top:14px; font-size:13px; color:#8cb6d8; text-align:center; }
+  </style>
+</head>
+<body>
+  <div class="auth-card">
+    <h1>Добро пожаловать</h1>
+    <p>Войдите в Cyber University</p>
+
+    <form id="login-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" autocomplete="email" required />
+      </div>
+      <div class="form-group">
+        <label for="password">Пароль</label>
+        <input id="password" name="password" type="password" autocomplete="current-password" required minlength="6" />
+      </div>
+      <button id="login-btn" type="submit">Войти</button>
+      <div id="msg" class="message"></div>
+    </form>
+
+    <div class="footer">После входа вы будете перенаправлены в профиль.</div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-app.js";
+    import { getAuth, onAuthStateChanged, signInWithEmailAndPassword, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { getFirestore, doc, runTransaction } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+    import { getStorage } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-storage.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-analytics.js";
+
+    // Подключение вашего проекта Firebase (общая конфигурация для Auth/Firestore/Storage/Analytics)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAUD1TVtWZxas9SVn75PuMmwi2HIu-hYoE",
+      authDomain: "cyber-university-f7b8c.firebaseapp.com",
+      projectId: "cyber-university-f7b8c",
+      storageBucket: "cyber-university-f7b8c.firebasestorage.app",
+      messagingSenderId: "603220099956",
+      appId: "1:603220099956:web:dd2ec21480ad95f1432221",
+      measurementId: "G-VJJNFLDP85"
+    };
+
+    // Инициализация Firebase core + сервисов, доступных на этой странице
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);           // Firebase Authentication
+    const db = getFirestore(app);        // Firestore (для данных пользователей)
+    const storage = getStorage(app);     // Storage (для единообразия)
+    getAnalytics(app);                   // Google Analytics (необязательно, но конфиг поддерживает)
+
+    // Если пользователь уже вошёл — сразу в профиль
+    onAuthStateChanged(auth, (user) => {
+      if (user) window.location.href = "profile.html";
+    });
+
+    const form = document.getElementById("login-form");
+    const msg = document.getElementById("msg");
+    const loginBtn = document.getElementById("login-btn");
+
+    // Показываем текст сообщения (ошибка или успех)
+    function showMessage(text, ok = false) {
+      msg.textContent = text;
+      msg.className = "message " + (ok ? "success" : "");
+    }
+
+    // Создаём документ пользователя при первом входе; существующие не трогаем
+    async function ensureUserDoc(user) {
+      if (!user?.uid) return;
+      const userRef = doc(db, "users", user.uid);
+
+      await runTransaction(db, async (tx) => {
+        const snap = await tx.get(userRef);
+        if (snap.exists()) return; // уже есть — выходим
+
+        tx.set(userRef, {
+          displayName: user.displayName || user.email || "",
+          email: user.email || "",
+          photoURL: user.photoURL || "",
+          role: "pending",      // только для новых записей
+          status: "offline",
+          progress: 0,
+          course: "SWE-201"
+        });
+      });
+    }
+
+    form.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      showMessage("");
+      loginBtn.disabled = true;
+
+      const email = form.email.value.trim();
+      const password = form.password.value;
+
+      try {
+        await setPersistence(auth, browserLocalPersistence); // сохраняем сессию
+        const credential = await signInWithEmailAndPassword(auth, email, password);
+        await ensureUserDoc(credential.user); // создаём запись в Firestore, если отсутствует
+        showMessage("Вход выполнен, перенаправляем...", true);
+        window.location.href = "profile.html";
+      } catch (err) {
+        // Дружественное сообщение об ошибке
+        const map = {
+          "auth/invalid-email": "Неверный формат email",
+          "auth/user-disabled": "Пользователь отключён",
+          "auth/user-not-found": "Пользователь не найден",
+          "auth/wrong-password": "Неверный пароль"
+        };
+        showMessage(map[err.code] || "Ошибка входа: " + err.message);
+      } finally {
+        loginBtn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>

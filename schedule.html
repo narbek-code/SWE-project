@@ -5,6 +5,18 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="stylesheet" href="style.css">
 <title>SWE-201 — Расписание</title>
+<style>
+  nav .nav-auth-btn {
+    padding: 10px 14px;
+    border-radius: 12px;
+    margin-left: 10px;
+    font-weight: 700;
+    border: 1px solid rgba(255,255,255,0.2);
+    background: linear-gradient(135deg, #00eaff, #7c7bff);
+    color: #0b0f1a;
+    box-shadow: 0 10px 26px rgba(0,234,255,0.3);
+  }
+</style>
 </head>
 
 <body>
@@ -21,6 +33,7 @@
       <a href="index.html">Главная</a>
       <a href="students.html">Студенты</a>
       <a href="teachers.html">Преподаватели</a>
+      <a id="auth-link" class="nav-auth-btn" href="login.html">Войти</a>
     </nav>
   </header>
 
@@ -140,6 +153,23 @@
 
 <div class="toast" id="toast">Сегодняшний день не найден</div>
 
-<script src="script.js"></script>
+  <script type="module" src="script.js"></script>
+  <script type="module">
+    import { auth } from "./script.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+
+    const link = document.getElementById("auth-link");
+
+  onAuthStateChanged(auth, (user) => {
+    if (!link) return;
+    if (user) {
+      link.textContent = "Профиль";
+      link.href = "profile.html";
+    } else {
+      link.textContent = "Войти";
+      link.href = "login.html";
+    }
+  });
+</script>
 </body>
 </html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Cyber University — Администрирование</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    :root {
+      --bg: #0c1021;
+      --card-bg: rgba(255, 255, 255, 0.08);
+      --glass-border: rgba(255, 255, 255, 0.18);
+      --glow: #6cf5ff;
+      --text: #e9f3ff;
+      --muted: #9fb3c8;
+      --accent: #ff4fd8;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Inter", "Segoe UI", system-ui, -apple-system, sans-serif;
+      color: var(--text);
+      background: radial-gradient(120% 120% at 20% 20%, #1a1f3a 0%, transparent 45%),
+                  radial-gradient(160% 120% at 80% 10%, #0f3b4c 0%, transparent 50%),
+                  linear-gradient(135deg, #0c1021 0%, #0a0d1a 50%, #05060f 100%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 32px 16px 64px;
+    }
+    header {
+      width: min(1180px, 100%);
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      margin-bottom: 22px;
+    }
+    h1 { margin: 0; letter-spacing: 0.04em; text-transform: uppercase; text-shadow: 0 0 18px rgba(108,245,255,0.55); }
+    .pill { padding:6px 12px; border-radius:999px; background:rgba(108,245,255,0.15); border:1px solid rgba(108,245,255,0.35); color:var(--text); font-weight:700; font-size:0.85rem; }
+    .grid { width: min(1180px, 100%); display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap:18px; }
+    .card {
+      position: relative;
+      padding: 16px;
+      border-radius: 16px;
+      background: var(--card-bg);
+      border: 1px solid var(--glass-border);
+      box-shadow: 0 18px 30px rgba(0,0,0,0.35), 0 0 24px rgba(108,245,255,0.2);
+      backdrop-filter: blur(12px);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .card::after {
+      content: "";
+      position: absolute;
+      inset: -50% auto auto -50%;
+      width: 160%;
+      height: 160%;
+      background: radial-gradient(circle, rgba(108,245,255,0.08) 0%, transparent 55%);
+      transform: rotate(8deg);
+      pointer-events: none;
+    }
+    .name { font-size: 1.05rem; font-weight: 700; margin: 0; }
+    .muted { color: var(--muted); margin: 0; }
+    button.approve {
+      align-self: flex-start;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      background: linear-gradient(135deg, #00eaff, #7c7bff);
+      color: #0b0f1a;
+      font-weight: 700;
+      box-shadow: 0 10px 30px rgba(0,234,255,0.35);
+      transition: transform 0.12s ease, box-shadow 0.12s ease, opacity 0.12s ease;
+    }
+    button.approve:disabled { opacity: 0.6; cursor: not-allowed; }
+    button.approve:hover:not(:disabled) { transform: translateY(-1px); box-shadow:0 14px 32px rgba(0,234,255,0.45); }
+    .loader, .empty, .error { grid-column: 1 / -1; text-align: center; color: var(--muted); padding: 32px 0; }
+    .spinner { width: 46px; height: 46px; margin: 0 auto 10px; border: 3px solid rgba(255,255,255,0.15); border-top-color: var(--glow); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media (max-width: 600px) {
+      header { flex-direction: column; align-items: flex-start; }
+      h1 { font-size: 1.4rem; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Панель администратора</h1>
+    <span class="pill">Управление заявками</span>
+  </header>
+
+  <div id="cards" class="grid"></div>
+
+  <section style="width:min(1180px,100%);margin-top:20px;display:flex;gap:12px;align-items:center;">
+    <input type="file" id="photoInput" accept="image/*" />
+    <button id="uploadAvatarBtn" class="approve">Загрузить аватар</button>
+    <img id="avatarPreview" src="" alt="Avatar" width="64" height="64" style="border-radius:12px;object-fit:cover;background:#1b2239;" />
+    <span id="avatarStatus" class="muted"></span>
+  </section>
+
+  <script type="module" src="script.js"></script>
+</body>
+</html>

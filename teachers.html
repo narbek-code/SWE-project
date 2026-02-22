@@ -21,71 +21,118 @@
       <a href="index.html">Главная</a>
       <a href="students.html">Студенты</a>
       <a href="schedule.html">Расписание</a>
+      <a id="auth-link" class="nav-auth-btn" href="login.html">Войти</a>
     </nav>
   </header>
 
   <h1 class="page-title reveal">Преподаватели SWE-201</h1>
-  <p class="subtitle reveal">Команда наставников из расписания группы.</p>
+  <p class="subtitle reveal">Команда наставников. Всегда на связи — даже без авторизации.</p>
 
   <div class="teacher-section">
     <h2 class="section-title reveal">Преподаватели</h2>
-    <div class="grid grid-3">
-      <div class="card reveal accent-violet" data-subject="Programming">
-        <div class="badge"><span class="icon">💻</span>Programming</div>
-        <div class="photo"></div>
-        <div class="name">Babayazov S</div>
-        <div class="role">Программирование и IT</div>
-        <div class="tags"><span class="tag">SWE-201</span><span class="tag">Практика</span></div>
-      </div>
-
-      <div class="card reveal accent-cyan" data-subject="Physics">
-        <div class="badge"><span class="icon">⚛️</span>Physics</div>
-        <div class="photo"></div>
-        <div class="name">Axmedjanov N</div>
-        <div class="role">Физика</div>
-        <div class="tags"><span class="tag">Lab</span><span class="tag">Theory</span></div>
-      </div>
-
-      <div class="card reveal accent-pink" data-subject="Math">
-        <div class="badge"><span class="icon">📐</span>Mathematics</div>
-        <div class="photo"></div>
-        <div class="name">To‘ychiyev S</div>
-        <div class="role">Математика</div>
-        <div class="tags"><span class="tag">Algebra</span><span class="tag">Logic</span></div>
-      </div>
-    </div>
-
-    <h2 class="section-title reveal">Преподавательницы</h2>
-    <div class="grid grid-3">
-      <div class="card reveal accent-violet" data-subject="English">
-        <div class="badge"><span class="icon">📘</span>Academic English</div>
-        <div class="photo"></div>
-        <div class="name">Mamadova T</div>
-        <div class="role">Academic English</div>
-        <div class="tags"><span class="tag">Speaking</span><span class="tag">Writing</span></div>
-      </div>
-
-      <div class="card reveal accent-cyan" data-subject="English">
-        <div class="badge"><span class="icon">🌍</span>English</div>
-        <div class="photo"></div>
-        <div class="name">Tuxliyeva F</div>
-        <div class="role">English</div>
-        <div class="tags"><span class="tag">Speaking</span><span class="tag">Grammar</span></div>
-      </div>
-
-      <div class="card reveal accent-pink" data-subject="Programming">
-        <div class="badge"><span class="icon">🖥️</span>IT Practice</div>
-        <div class="photo"></div>
-        <div class="name">Islombekov B</div>
-        <div class="role">Практика и воркшопы</div>
-        <div class="tags"><span class="tag">Projects</span><span class="tag">Mentor</span></div>
-      </div>
-    </div>
+    <div id="teachersList" class="teacher-grid reveal"></div>
   </div>
 
   <footer class="reveal">Cyber University — SWE-201 © 2025</footer>
 </div>
 
-<script src="script.js"></script>
+  <script type="module" src="script.js"></script>
+  <script type="module">
+    import { auth, db } from "./script.js";
+    import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-auth.js";
+    import { collection, query, onSnapshot, limit } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
+
+    const link = document.getElementById("auth-link");
+    const list = document.getElementById("teachersList");
+    const loaderHTML = `
+      <div class="muted center-row">
+        <div class="spinner tiny"></div>
+        Загружаем преподавателей…
+      </div>`;
+
+    const fallbackAvatar = (name = "Teacher") =>
+      `https://api.dicebear.com/7.x/identicon/svg?seed=${encodeURIComponent(name)}&backgroundType=gradientLinear&radius=50&flip=true&backgroundColor=14182a,1b0f2d&scale=95`;
+
+    onAuthStateChanged(auth, (user) => {
+      if (!link) return;
+      if (user) {
+        link.textContent = "Профиль";
+        link.href = "profile.html";
+      } else {
+        link.textContent = "Войти";
+        link.href = "login.html";
+      }
+    });
+
+    const createTeacherCard = (data) => {
+      const card = document.createElement("div");
+      card.className = "teacher-card";
+
+      const badge = document.createElement("div");
+      badge.className = "badge";
+      badge.innerHTML = `<span class="icon">👩‍🏫</span>Преподаватель`;
+
+      const photo = document.createElement("div");
+      photo.className = "teacher-photo";
+      const nameText = data.displayName || "Без имени";
+      photo.style.backgroundImage = `url('${data.photoURL || fallbackAvatar(nameText)}')`;
+
+      const name = document.createElement("h3");
+      name.className = "teacher-name";
+      name.textContent = nameText;
+
+      const role = document.createElement("p");
+      role.className = "teacher-role";
+      role.textContent = data.subject || "Преподаватель";
+
+      const tagsBox = document.createElement("div");
+      tagsBox.className = "tags";
+      const tags = Array.isArray(data.tags) && data.tags.length
+        ? data.tags
+        : ["SWE-201", "Theory", "Practice"];
+      tags.forEach((t) => {
+        const tag = document.createElement("span");
+        tag.className = "tag";
+        tag.textContent = t;
+        tagsBox.append(tag);
+      });
+
+      card.append(badge, photo, name, role, tagsBox);
+      return card;
+    };
+
+    function renderEmpty() {
+      list.innerHTML = '<div class="muted center-row">Преподаватели не найдены.</div>';
+    }
+
+    function startTeachersFeed() {
+      if (!list) return;
+      list.innerHTML = loaderHTML;
+
+      const q = query(collection(db, "users"), limit(400));
+      return onSnapshot(
+        q,
+        (snap) => {
+          list.innerHTML = "";
+          let count = 0;
+          snap.forEach((docSnap) => {
+            const data = docSnap.data();
+            const role = (data.role || "").toString().toLowerCase().trim();
+            if (role === "teacher") {
+              list.appendChild(createTeacherCard(data));
+              count++;
+            }
+          });
+          if (!count) return renderEmpty();
+        },
+        (err) => {
+          console.error("Ошибка загрузки преподавателей:", err);
+          list.innerHTML = '<div class="muted center-row">Не удалось загрузить преподавателей.</div>';
+        }
+      );
+    }
+
+    startTeachersFeed();
+  </script>
 </body>
 </html>
